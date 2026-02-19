@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>CryptoVault - Italy Banking</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f1419;
+      --bg-secondary: #1a1e27;
+      --primary-yellow: #f7931a;
+      --primary-yellow-dark: #d68315;
+      --primary-yellow-light: #faa519;
+      --text-white: #ffffff;
+      --text-light: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-color: #2d3748;
+      --accent: #f7931a;
+      --green: #10b981;
+      --red-error: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    .container { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      padding: 30px 20px;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      z-index: 50;
+    }
+
+    .logo-section { display: flex; align-items: center; gap: 12px; }
+    .logo-circle {
+      width: 40px; height: 40px;
+      background: var(--primary-yellow);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #000; font-size: 20px;
+    }
+
+    .nav-menu { display: flex; flex-direction: column; gap: 12px; }
+    .nav-item {
+      padding: 12px 16px; border-radius: 8px;
+      color: var(--text-muted); cursor: pointer;
+      transition: all 0.3s ease; text-decoration: none;
+      display: flex; align-items: center; gap: 12px; font-weight: 500;
+    }
+    .nav-item.active { background: var(--primary-yellow); color: #000; }
+    .nav-item:hover:not(.active) { color: var(--primary-yellow); background: rgba(247, 147, 26, 0.05); }
+
+    /* MAIN CONTENT */
+    .main { flex: 1; margin-left: 280px; background: var(--bg-dark); }
+
+    .topbar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .dashboard-content { padding: 40px; }
+
+    /* BALANCE CARD */
+    .balance-card {
+      background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-yellow-dark) 100%);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+      color: #000;
+      box-shadow: 0 10px 40px rgba(247, 147, 26, 0.15);
+    }
+    .balance-amount { font-size: 48px; font-weight: 700; margin-bottom: 8px; }
+
+    .btn {
+      padding: 14px 32px; border: none; border-radius: 8px;
+      font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+      text-transform: uppercase; font-family: inherit;
+    }
+    .btn-primary { background: #000; color: var(--primary-yellow); }
+    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      background: var(--bg-secondary); border-radius: 16px;
+      padding: 40px; max-width: 500px; width: 90%;
+      border: 1px solid var(--border-color);
+    }
+
+    .method-box {
+      background: var(--bg-dark); border: 1px solid var(--primary-yellow);
+      padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px;
+      margin: 20px 0;
+    }
+
+    .form-input, .form-select {
+      width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 12px; color: #fff; margin-bottom: 15px;
+    }
+
+    .processing-spinner {
+      width: 40px; height: 40px; border: 3px solid var(--border-color);
+      border-top-color: var(--primary-yellow); border-radius: 50%;
+      animation: spin 1s linear infinite; margin: 20px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-box {
+      background: rgba(239, 68, 68, 0.1); border: 1px solid var(--red-error);
+      padding: 20px; border-radius: 8px; text-align: center; color: var(--red-error);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo-section">
+        <div class="logo-circle">₿</div>
+        <div style="font-weight:700; font-size:18px;">CryptoVault</div>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-item active">📊 Dashboard</div>
+        <div class="nav-item">💰 Portafoglio</div>
+        <div class="nav-item">⚙️ Impostazioni</div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div style="font-size:24px; font-weight:700;">Italy Banking</div>
+        <div style="background:var(--bg-dark); padding:8px 16px; border-radius:8px; border:1px solid var(--border-color);">
+          👤 <strong>Grace</strong>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <div class="balance-card">
+          <div style="text-transform:uppercase; font-size:12px; font-weight:600; opacity:0.8;">Saldo Disponibile</div>
+          <div class="balance-amount">€500,00</div>
+          <button class="btn btn-primary" id="withdrawBtn">Preleva Fondi</button>
+        </div>
+
+        <div style="background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color); padding:20px;">
+          <h3 style="margin-top:0;">Ultime Transazioni</h3>
+          <p style="color:var(--text-muted);">Nessuna transazione recente per questo account.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <script>
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+
+    function showModal(html) {
+      modalContent.innerHTML = html;
+      modalOverlay.style.display = 'flex';
+    }
+
+    function hideModal() { modalOverlay.style.display = 'none'; }
+
+    document.getElementById('withdrawBtn').onclick = () => {
+      showModal(`
+        <h2 style="margin-top:0;">Prelievo Fondi</h2>
+        <p style="color:var(--text-muted);">Seleziona il metodo di prelievo (Solo Crypto disponibile per l'Italia):</p>
+        <div class="method-box">
+          <div style="background:#f7931a; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">₿</div>
+          <div>
+            <div style="font-weight:700;">Cryptocurrency</div>
+            <div style="font-size:12px; color:var(--text-muted);">Trasferimento immediato</div>
+          </div>
+        </div>
+        <button class="btn" style="width:100%; background:var(--primary-yellow); color:#000;" onclick="stepTwo()">Continua</button>
+      `);
+    };
+
+    function stepTwo() {
+      showModal(`
+        <h2 style="margin-top:0;">Dettagli Prelievo</h2>
+        <label style="font-size:12px; color:var(--text-muted);">Indirizzo Wallet</label>
+        <input type="text" class="form-input" placeholder="Inserisci indirizzo BTC/ETH/USDT">
+        <label style="font-size:12px; color:var(--text-muted);">Importo (EUR)</label>
+        <input type="number" class="form-input" value="500">
+        <div style="background:var(--bg-dark); padding:15px; border-radius:8px; display:flex; justify-content:space-between; margin-bottom:20px;">
+          <span style="color:var(--text-muted);">Commissione punti</span>
+          <span style="font-weight:700; color:var(--primary-yellow);">$45.00</span>
+        </div>
+        <button class="btn" style="width:100%; background:var(--primary-yellow); color:#000;" onclick="process()">Conferma</button>
+      `);
+    }
+
+    function process() {
+      showModal(`
+        <h2 style="text-align:center;">Elaborazione...</h2>
+        <div class="processing-spinner"></div>
+        <p style="text-align:center; color:var(--text-muted);">Verifica della rete in corso</p>
+      `);
+      setTimeout(() => {
+        showModal(`
+          <div class="error-box">
+            <h3 style="margin-top:0;">⚠️ Prelievo Bloccato</h3>
+            <p>Punti di fiducia insufficienti per completare l'operazione.</p>
+          </div>
+          <p style="text-align:center; margin-top:20px;">Contatta il supporto per sbloccare i fondi.</p>
+          <button class="btn" style="width:100%; margin-top:10px; border:1px solid var(--border-color); color:#fff;" onclick="hideModal()">Chiudi</button>
+        `);
+      }, 3000);
+    }
+
+    modalOverlay.onclick = (e) => {
+if(e.target === modalOverlay) hideModal(); };
+</script>
+
+</body> 
+</html>
